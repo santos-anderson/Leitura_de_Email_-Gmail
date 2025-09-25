@@ -26,7 +26,6 @@ public class FileStorageService implements StorageService {
             try (FileWriter writer = new FileWriter(arquivo, true)) {
                 writer.write(conteudo + System.lineSeparator());
             }
-
             System.out.println("Arquivo salvo: " + arquivo.getPath());
 
         } catch (IOException e) {
