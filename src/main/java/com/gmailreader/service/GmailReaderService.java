@@ -23,7 +23,6 @@ public class GmailReaderService {
         return listarMensagens(userId, new ArrayList<>());
     }
 
-
     private List<Message> listarMensagens(String userId, List<String> idsExcluidos) throws IOException {
         List<Message> emails = new ArrayList<>();
         String pageToken = null;
