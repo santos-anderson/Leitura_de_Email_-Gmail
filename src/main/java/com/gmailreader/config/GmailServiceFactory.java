@@ -13,7 +13,7 @@ public class GmailServiceFactory {
     private static final String APPLICATION_NAME = "Gmail Reader API";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
-    public Gmail createGmailService(Credential credential) throws Exception {
+    public Gmail criarServicoGmail(Credential credential) throws Exception {
         return new Gmail.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
                 JSON_FACTORY,

@@ -21,7 +21,7 @@ public class EmailController {
     public ResponseEntity<ApiResponse<String>> processarEmails() throws IOException {
         emailProcessingService.processarEmails();
         
-        ApiResponse<String> response = ApiResponse.success(
+        ApiResponse<String> response = ApiResponse.sucesso(
             "Emails processados com sucesso!",
             "Processamento concluído"
         );

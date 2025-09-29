@@ -34,7 +34,8 @@ public class FileStorageService implements StorageService {
     }
 
     @Override
-    public String getStorageLocation() {
+    public String obterLocalizacaoArmazenamento() {
+
         return pastaDestino;
     }
 

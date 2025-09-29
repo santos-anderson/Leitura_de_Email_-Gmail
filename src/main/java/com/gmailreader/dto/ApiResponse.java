@@ -1,13 +1,9 @@
 package com.gmailreader.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
 public class ApiResponse<T> {
     
     @JsonProperty("success")
@@ -25,7 +21,7 @@ public class ApiResponse<T> {
     @JsonProperty("error")
     private String error;
 
-    public static <T> ApiResponse<T> success(String message, T data) {
+    public static <T> ApiResponse<T> sucesso(String message, T data) {
         ApiResponse<T> response = new ApiResponse<>();
         response.success = true;
         response.message = message;
@@ -33,11 +29,11 @@ public class ApiResponse<T> {
         return response;
     }
 
-    public static <T> ApiResponse<T> success(String message) {
-        return success(message, null);
+    public static <T> ApiResponse<T> sucesso(String message) {
+        return sucesso(message, null);
     }
 
-    public static <T> ApiResponse<T> error(String message, String error) {
+    public static <T> ApiResponse<T> erro(String message, String error) {
         ApiResponse<T> response = new ApiResponse<>();
         response.success = false;
         response.message = message;
@@ -45,8 +41,8 @@ public class ApiResponse<T> {
         return response;
     }
 
-    public static <T> ApiResponse<T> error(String message) {
-        return error(message, null);
+    public static <T> ApiResponse<T> erro(String message) {
+        return erro(message, null);
     }
 
 }

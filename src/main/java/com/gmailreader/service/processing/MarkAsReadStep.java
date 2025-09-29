@@ -14,7 +14,7 @@ public class MarkAsReadStep extends AbstractProcessingStep {
     }
     
     @Override
-    protected void doProcess(Message message, ProcessingContext context) throws Exception {
+    protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
         gmailModifierService.marcarComoLido(message.getId());
     }
 }

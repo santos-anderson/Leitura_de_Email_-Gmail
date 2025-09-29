@@ -21,40 +21,44 @@ public class EmailProcessingService {
             SaveEmailStep saveStep,
             MarkAsProcessedStep markProcessedStep,
             MarkAsReadStep markReadStep) {
-        
+
         this.gmailReaderService = gmailReaderService;
-        
+
         // Configura a cadeia de processamento
         this.processingChain = checkStep;
         checkStep.setNext(convertStep)
-                 .setNext(saveStep)
-                 .setNext(markProcessedStep)
-                 .setNext(markReadStep);
+                .setNext(saveStep)
+                .setNext(markProcessedStep)
+                .setNext(markReadStep);
     }
 
-    public void processarEmails() throws IOException {
+    public void processarEmails() {
         try {
             List<Message> emails = gmailReaderService.listarEmails();
 
             for (Message email : emails) {
-                try {
-                    ProcessingContext context = new ProcessingContext(email.getId());
-                    processingChain.process(email, context);
-                } catch (Exception e) {
-                    throw new EmailProcessingException(
-                        "Falha ao processar email ID: " + email.getId(), e
-                    );
-                }
+                processarEmail(email);
             }
         } catch (IOException e) {
             throw new EmailProcessingException(
-                "Falha na comunicação com Gmail API", e
+                    "Falha na comunicação com Gmail API", e
             );
         } catch (EmailProcessingException e) {
             throw e;
         } catch (Exception e) {
             throw new EmailProcessingException(
-                "Erro inesperado durante o processamento de emails", e
+                    "Erro inesperado durante o processamento de emails", e
+            );
+        }
+    }
+
+    public void processarEmail(Message email) {
+        try {
+            ProcessingContext context = new ProcessingContext(email.getId());
+            processingChain.processar(email, context);
+        } catch (Exception e) {
+            throw new EmailProcessingException(
+                    "Falha ao processar email ID: " + email.getId(), e
             );
         }
     }

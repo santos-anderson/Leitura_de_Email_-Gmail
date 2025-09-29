@@ -13,15 +13,15 @@ public abstract class AbstractProcessingStep implements ProcessingStep {
     }
     
     @Override
-    public void process(Message message, ProcessingContext context) throws Exception {
+    public void processar(Message message, ProcessingContext context) throws Exception {
 
-        doProcess(message, context);
+        executarProcessamento(message, context);
         
 
         if (nextStep != null) {
-            nextStep.process(message, context);
+            nextStep.processar(message, context);
         }
     }
 
-    protected abstract void doProcess(Message message, ProcessingContext context) throws Exception;
+    protected abstract void executarProcessamento(Message message, ProcessingContext context) throws Exception;
 }

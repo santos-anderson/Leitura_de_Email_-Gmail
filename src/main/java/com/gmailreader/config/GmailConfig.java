@@ -17,6 +17,6 @@ public class GmailConfig {
 
     @Bean
     public Gmail gmail() throws Exception {
-        return gmailServiceFactory.createGmailService(oAuthManager.authorize());
+        return gmailServiceFactory.criarServicoGmail(oAuthManager.authorize());
     }
 }

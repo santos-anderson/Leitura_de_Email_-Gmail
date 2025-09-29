@@ -6,25 +6,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CheckAlreadyProcessedStep extends AbstractProcessingStep {
-    
+
     private final ProcessedEmailFileRepository processedEmailRepository;
-    
+
     public CheckAlreadyProcessedStep(ProcessedEmailFileRepository processedEmailRepository) {
         this.processedEmailRepository = processedEmailRepository;
     }
-    
-    @Override
-    protected void doProcess(Message message, ProcessingContext context) throws Exception {
-        boolean alreadyProcessed = processedEmailRepository.emailJaProcessado(message.getId());
-        context.setAlreadyProcessed(alreadyProcessed);
-    }
-    
-    @Override
-    public void process(Message message, ProcessingContext context) throws Exception {
-        doProcess(message, context);
 
-        if (!context.isAlreadyProcessed()) {
-            super.process(message, context);
+    @Override
+    protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
+        boolean alreadyProcessed = processedEmailRepository.emailJaProcessado(message.getId());
+        context.definirJaProcessado(alreadyProcessed);
+    }
+
+    @Override
+    public void processar(Message message, ProcessingContext context) throws Exception {
+        executarProcessamento(message, context);
+        if (!context.jaFoiProcessado()) {
+            super.processar(message, context);
         }
     }
 }
+

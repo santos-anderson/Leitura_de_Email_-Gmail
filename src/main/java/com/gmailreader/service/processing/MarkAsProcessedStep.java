@@ -6,15 +6,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MarkAsProcessedStep extends AbstractProcessingStep {
-    
+
     private final ProcessedEmailFileRepository processedEmailRepository;
-    
+
     public MarkAsProcessedStep(ProcessedEmailFileRepository processedEmailRepository) {
         this.processedEmailRepository = processedEmailRepository;
     }
-    
+
     @Override
-    protected void doProcess(Message message, ProcessingContext context) throws Exception {
+    protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
+        // Marca o email como processado e grava imediatamente no arquivo
         processedEmailRepository.marcarComoProcessado(message.getId());
     }
 }
+
+

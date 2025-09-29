@@ -14,8 +14,8 @@ public class ConvertEmailStep extends AbstractProcessingStep {
     }
     
     @Override
-    protected void doProcess(Message message, ProcessingContext context) throws Exception {
+    protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
         String json = emailToJsonService.converter(message);
-        context.setConvertedJson(json);
+        context.definirJsonConvertido(json);
     }
 }

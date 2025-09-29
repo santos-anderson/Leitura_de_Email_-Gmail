@@ -4,5 +4,5 @@ public interface StorageService {
 
     void salvarEmail(String conteudo);
 
-    String getStorageLocation();
+    String obterLocalizacaoArmazenamento();
 }

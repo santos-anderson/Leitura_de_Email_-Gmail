@@ -14,9 +14,9 @@ public class SaveEmailStep extends AbstractProcessingStep {
     }
     
     @Override
-    protected void doProcess(Message message, ProcessingContext context) throws Exception {
-        if (context.getConvertedJson() != null) {
-            storageService.salvarEmail(context.getConvertedJson());
+    protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
+        if (context.obterJsonConvertido() != null) {
+            storageService.salvarEmail(context.obterJsonConvertido());
         }
     }
 }

@@ -74,7 +74,27 @@
 			<artifactId>json</artifactId>
 			<version>20240303</version>
 		</dependency>
-	</dependencies>
+			<!-- Google Cloud Pub/Sub -->
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>google-cloud-pubsub</artifactId>
+				<version>1.129.7</version>
+			</dependency>
+
+			<!-- Google Auth -->
+			<dependency>
+				<groupId>com.google.auth</groupId>
+				<artifactId>google-auth-library-oauth2-http</artifactId>
+				<version>1.24.0</version>
+			</dependency>
+
+			<!-- Gson (usado internamente pelo Pub/Sub client) -->
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.10.1</version>
+			</dependency>
+		</dependencies>
 
 	<build>
 		<plugins>

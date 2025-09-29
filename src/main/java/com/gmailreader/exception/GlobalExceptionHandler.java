@@ -16,10 +16,10 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(EmailProcessingException.class)
-    public ResponseEntity<ApiResponse<Void>> handleEmailProcessingException(EmailProcessingException ex) {
+    public ResponseEntity<ApiResponse<Void>> tratarExcecaoProcessamentoEmail(EmailProcessingException ex) {
         logger.error("Erro no processamento de emails: {}", ex.getMessage(), ex);
         
-        ApiResponse<Void> response = ApiResponse.error(
+        ApiResponse<Void> response = ApiResponse.erro(
             "Falha no processamento de emails", 
             ex.getMessage()
         );
@@ -29,10 +29,10 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIOException(IOException ex) {
+    public ResponseEntity<ApiResponse<Void>> tratarExcecaoIO(IOException ex) {
         logger.error("Erro de I/O: {}", ex.getMessage(), ex);
         
-        ApiResponse<Void> response = ApiResponse.error(
+        ApiResponse<Void> response = ApiResponse.erro(
             "Erro de entrada/saída", 
             "Falha na comunicação com serviços externos"
         );
@@ -41,10 +41,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+    public ResponseEntity<ApiResponse<Void>> tratarExcecaoGenerica(Exception ex) {
         logger.error("Erro interno do servidor: {}", ex.getMessage(), ex);
         
-        ApiResponse<Void> response = ApiResponse.error(
+        ApiResponse<Void> response = ApiResponse.erro(
             "Erro interno do servidor", 
             "Ocorreu um erro inesperado. Tente novamente mais tarde."
         );
