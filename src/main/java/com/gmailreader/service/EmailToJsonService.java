@@ -71,7 +71,6 @@ public class EmailToJsonService {
         return new String(Base64.getUrlDecoder().decode(data));
     }
 
-    
     private String formatarData(String dataOriginal) {
         if (dataOriginal == null || dataOriginal.isEmpty()) return "";
         
