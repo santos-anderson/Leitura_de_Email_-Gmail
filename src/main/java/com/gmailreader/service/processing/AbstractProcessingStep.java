@@ -22,10 +22,6 @@ public abstract class AbstractProcessingStep implements ProcessingStep {
             nextStep.process(message, context);
         }
     }
-    
-    /**
-     * Método abstrato que cada step concreto deve implementar
-     * com sua lógica específica de processamento.
-     */
+
     protected abstract void doProcess(Message message, ProcessingContext context) throws Exception;
 }

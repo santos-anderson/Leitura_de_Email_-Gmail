@@ -8,11 +8,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Serviço responsável por orquestrar o processamento de emails
- * usando o padrão Chain of Responsibility para maior flexibilidade
- * e facilidade de extensão do pipeline de processamento.
- */
 @Service
 public class EmailProcessingService {
 
