@@ -31,7 +31,6 @@ public class NotificationParser {
 
         return null;
     }
-
     public boolean isValidNotification(String notificationJson) {
         return extrairHistoryId(notificationJson) != null;
     }
