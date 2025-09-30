@@ -1,13 +1,12 @@
 package com.gmailreader.service;
 
-import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.History;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -15,17 +14,35 @@ public class GmailWatchService {
 
     private static final Logger logger = LoggerFactory.getLogger(GmailWatchService.class);
 
-    private final Gmail gmail;
     private final EmailProcessingService emailProcessingService;
+    private final GmailWatchManager gmailWatchManager;
+    private final GmailHistoryService gmailHistoryService;
 
-    public GmailWatchService(Gmail gmail, EmailProcessingService emailProcessingService) {
-        this.gmail = gmail;
+    public GmailWatchService(EmailProcessingService emailProcessingService,
+                             GmailWatchManager gmailWatchManager,
+                             GmailHistoryService gmailHistoryService) {
         this.emailProcessingService = emailProcessingService;
+        this.gmailWatchManager = gmailWatchManager;
+        this.gmailHistoryService = gmailHistoryService;
     }
+
+    @PostConstruct
+    public void iniciarWatchAoSubir() {
+        try {
+            iniciarWatch();
+        } catch (Exception e) {
+            logger.error("Erro ao iniciar Watch do Gmail: {}", e.getMessage(), e);
+        }
+    }
+
+    public void iniciarWatch() {
+        gmailWatchManager.iniciarWatch();
+    }
+
 
     public void processarEmailsDoHistorico(BigInteger historyId) {
         try {
-            List<History> historyList = buscarHistoricoDoGmailSeguro(historyId);
+            List<History> historyList = gmailHistoryService.buscarHistorico(historyId);
 
             if (!historyList.isEmpty()) {
                 logger.info("Encontradas {} alterações no histórico para historyId {}. Processando emails não lidos.",
@@ -38,22 +55,8 @@ public class GmailWatchService {
 
         } catch (Exception e) {
             logger.error("Erro inesperado ao processar emails para historyId {}: {}", historyId, e.getMessage(), e);
-
             emailProcessingService.processarEmails();
         }
     }
 
-    private List<History> buscarHistoricoDoGmailSeguro(BigInteger startHistoryId) {
-        try {
-            List<History> historyList = gmail.users().history().list("me")
-                    .setStartHistoryId(startHistoryId)
-                    .execute()
-                    .getHistory();
-            return historyList != null ? historyList : Collections.emptyList();
-        } catch (Exception e) {
-            logger.warn("Não foi possível buscar histórico do Gmail para historyId {}: {}. Continuando com processamento manual.", startHistoryId, e.getMessage());
-            return Collections.emptyList();
-        }
-    }
 }
-

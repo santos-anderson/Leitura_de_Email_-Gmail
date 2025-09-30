@@ -81,7 +81,7 @@
 				<version>1.129.7</version>
 			</dependency>
 
-			<!-- Google Auth -->
+		<!-- Google Auth -->
 			<dependency>
 				<groupId>com.google.auth</groupId>
 				<artifactId>google-auth-library-oauth2-http</artifactId>
