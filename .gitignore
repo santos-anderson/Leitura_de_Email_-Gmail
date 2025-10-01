@@ -36,10 +36,17 @@ build/
 *.json
 credentials/
 tokens/
+tokens/*
 emails/
+emails/*
 *.key
 *.pem
 *.p12
 application-local.properties
 application-prod.properties
 src/main/resources/application-local.properties
+
+# OAuth Tokens (crítico - nunca commitar)
+StoredCredential
+**/tokens/**
+**/StoredCredential
