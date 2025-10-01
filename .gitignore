@@ -36,17 +36,24 @@ build/
 *.json
 credentials/
 tokens/
+<<<<<<< HEAD
 tokens/*
 emails/
 emails/*
+=======
+emails/
+>>>>>>> 0f9a767be6f6d597b3db65ad04ea1f063a645f9a
 *.key
 *.pem
 *.p12
 application-local.properties
 application-prod.properties
 src/main/resources/application-local.properties
+<<<<<<< HEAD
 
 # OAuth Tokens (crítico - nunca commitar)
 StoredCredential
 **/tokens/**
 **/StoredCredential
+=======
+>>>>>>> 0f9a767be6f6d597b3db65ad04ea1f063a645f9a
