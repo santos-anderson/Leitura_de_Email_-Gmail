@@ -1,5 +1,6 @@
 package com.gmailreader.config;
 
+import com.gmailreader.exception.GmailReaderException;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class PubSubCredentialsManager {
             return credentials;
         } catch (Exception e) {
             logger.error("Erro ao carregar credenciais do Pub/Sub: {}", e.getMessage(), e);
-            throw new RuntimeException("Falha ao carregar credenciais do Pub/Sub", e);
+            throw new GmailReaderException("Falha ao carregar credenciais do Pub/Sub", e);
         }
     }
 }

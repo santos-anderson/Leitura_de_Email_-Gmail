@@ -1,6 +1,7 @@
 package com.gmailreader.service;
 
 import com.gmailreader.config.OAuthManager;
+import com.gmailreader.exception.GmailReaderException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -38,7 +39,7 @@ public class GmailServiceManager {
             logger.info("Gmail Service inicializado com sucesso");
         } catch (Exception e) {
             logger.error("Erro ao inicializar Gmail Service: {}", e.getMessage(), e);
-            throw new RuntimeException("Falha na inicialização do Gmail Service", e);
+            throw new GmailReaderException("Falha na inicialização do Gmail Service", e);
         }
     }
 

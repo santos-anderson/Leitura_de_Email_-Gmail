@@ -3,6 +3,7 @@ package com.gmailreader.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmailreader.dto.EmailDto;
+import com.gmailreader.exception.GmailReaderException;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartHeader;
@@ -37,7 +38,7 @@ public class EmailToJsonService {
             EmailDto emailDto = new EmailDto(message.getId(), data, remetente, assunto, corpo);
             return objectMapper.writeValueAsString(emailDto);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Erro ao serializar email para JSON: " + e.getMessage(), e);
+            throw new GmailReaderException("Erro ao serializar email para JSON: " + e.getMessage(), e);
         }
     }
 

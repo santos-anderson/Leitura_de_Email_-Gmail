@@ -45,8 +45,7 @@ public class GmailWatchService {
             List<History> historyList = gmailHistoryService.buscarHistorico(historyId);
 
             if (!historyList.isEmpty()) {
-                logger.info("Encontradas {} alterações no histórico para historyId {}. Processando emails não lidos.",
-                        historyList.size(), historyId);
+                logger.info("Encontradas {} alterações no histórico para historyId {}. Processando emails não lidos.", historyList.size(), historyId);
             } else {
                 logger.info("Nenhum email novo encontrado no histórico para historyId {}. Processando emails manualmente.", historyId);
             }
@@ -55,7 +54,7 @@ public class GmailWatchService {
             logger.info("Emails processados com sucesso para historyId: {}", historyId);
 
         } catch (Exception e) {
-            logger.error("Erro inesperado ao processar emails para historyId {}: {}", historyId, e.getMessage(), e);
+            logger.error("Erro ao processar emails para historyId {}: {}", historyId, e.getMessage(), e);
         }
     }
 

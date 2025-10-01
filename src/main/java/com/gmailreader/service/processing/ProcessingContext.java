@@ -1,5 +1,10 @@
 package com.gmailreader.service.processing;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProcessingContext {
     
     private String emailId;

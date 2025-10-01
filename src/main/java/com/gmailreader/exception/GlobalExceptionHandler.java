@@ -15,12 +15,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(EmailProcessingException.class)
-    public ResponseEntity<ApiResponse<Void>> tratarExcecaoProcessamentoEmail(EmailProcessingException ex) {
-        logger.error("Erro no processamento de emails: {}", ex.getMessage(), ex);
+    @ExceptionHandler(GmailReaderException.class)
+    public ResponseEntity<ApiResponse<Void>> tratarExcecaoGmailReader(GmailReaderException ex) {
+        logger.error("Erro no Gmail Reader: {}", ex.getMessage(), ex);
         
         ApiResponse<Void> response = ApiResponse.erro(
-            "Falha no processamento de emails", 
+            "Falha na operação do Gmail Reader", 
             ex.getMessage()
         );
         

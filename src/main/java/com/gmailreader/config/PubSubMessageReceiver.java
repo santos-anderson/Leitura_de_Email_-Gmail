@@ -1,5 +1,6 @@
 package com.gmailreader.config;
 
+import com.gmailreader.exception.GmailReaderException;
 import com.gmailreader.service.PubSubMessageProcessor;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -45,7 +46,7 @@ public class PubSubMessageReceiver {
 
         } catch (Exception e) {
             logger.error("Erro ao inicializar Pub/Sub subscriber: {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new GmailReaderException("Falha ao inicializar Pub/Sub subscriber", e);
         }
     }
 }

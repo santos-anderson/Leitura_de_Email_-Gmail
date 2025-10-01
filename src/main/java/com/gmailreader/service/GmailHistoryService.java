@@ -43,9 +43,4 @@ public class GmailHistoryService {
             return Collections.emptyList();
         }
     }
-
-    public boolean temAlteracoes(BigInteger startHistoryId) {
-        List<History> historico = buscarHistorico(startHistoryId);
-        return !historico.isEmpty();
-    }
 }

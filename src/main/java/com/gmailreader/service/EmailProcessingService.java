@@ -1,7 +1,8 @@
 package com.gmailreader.service;
 
-import com.gmailreader.exception.EmailProcessingException;
-import com.gmailreader.service.processing.*;
+import com.gmailreader.exception.GmailReaderException;
+import com.gmailreader.service.processing.ProcessingContext;
+import com.gmailreader.service.processing.ProcessingStep;
 import com.google.api.services.gmail.model.Message;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +17,10 @@ public class EmailProcessingService {
 
     public EmailProcessingService(
             GmailReaderService gmailReaderService,
-            CheckAlreadyProcessedStep checkStep,
-            ConvertEmailStep convertStep,
-            SaveEmailStep saveStep,
-            MarkAsProcessedStep markProcessedStep,
-            MarkAsReadStep markReadStep) {
+            ProcessingStep processingChain) {
 
         this.gmailReaderService = gmailReaderService;
-
-        // Configura a cadeia de processamento
-        this.processingChain = checkStep;
-        checkStep.setNext(convertStep)
-                .setNext(saveStep)
-                .setNext(markProcessedStep)
-                .setNext(markReadStep);
+        this.processingChain = processingChain;
     }
 
     public void processarEmails() {
@@ -40,13 +31,13 @@ public class EmailProcessingService {
                 processarEmail(email);
             }
         } catch (IOException e) {
-            throw new EmailProcessingException(
+            throw new GmailReaderException(
                     "Falha na comunicação com Gmail API", e
             );
-        } catch (EmailProcessingException e) {
+        } catch (GmailReaderException e) {
             throw e;
         } catch (Exception e) {
-            throw new EmailProcessingException(
+            throw new GmailReaderException(
                     "Erro inesperado durante o processamento de emails", e
             );
         }
@@ -57,7 +48,7 @@ public class EmailProcessingService {
             ProcessingContext context = new ProcessingContext(email.getId());
             processingChain.processar(email, context);
         } catch (Exception e) {
-            throw new EmailProcessingException(
+            throw new GmailReaderException(
                     "Falha ao processar email ID: " + email.getId(), e
             );
         }

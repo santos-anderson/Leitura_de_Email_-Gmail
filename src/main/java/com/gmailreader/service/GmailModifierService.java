@@ -1,5 +1,6 @@
 package com.gmailreader.service;
 
+import com.gmailreader.constants.GmailConstants;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ModifyMessageRequest;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.util.List;
 public class GmailModifierService {
 
     private final Gmail gmailService;
-    private final String userId = "me";
+    private final String userId = GmailConstants.Gmail.CURRENT_USER_ID;
 
     public GmailModifierService(Gmail gmailService) {
         this.gmailService = gmailService;

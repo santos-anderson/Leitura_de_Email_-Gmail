@@ -1,5 +1,7 @@
 package com.gmailreader.service;
 
+import com.gmailreader.constants.GmailConstants;
+import com.gmailreader.exception.GmailReaderException;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.WatchRequest;
 import org.slf4j.Logger;
@@ -28,22 +30,11 @@ public class GmailWatchManager {
             WatchRequest watchRequest = new WatchRequest()
                     .setTopicName(topicName);
 
-            gmailService.users().watch("me", watchRequest).execute();
+            gmailService.users().watch(GmailConstants.Gmail.CURRENT_USER_ID, watchRequest).execute();
             logger.info("Watch do Gmail registrado com sucesso no tópico: {}", topicName);
         } catch (Exception e) {
             logger.error("Erro ao registrar Watch do Gmail: {}", e.getMessage(), e);
-            throw new RuntimeException("Falha ao iniciar Watch do Gmail", e);
-        }
-    }
-
-    public void pararWatch() {
-        try {
-            Gmail gmailService = gmailServiceManager.getGmailService();
-            gmailService.users().stop("me").execute();
-            logger.info("Watch do Gmail parado com sucesso");
-        } catch (Exception e) {
-            logger.error("Erro ao parar Watch do Gmail: {}", e.getMessage(), e);
-            throw new RuntimeException("Falha ao parar Watch do Gmail", e);
+            throw new GmailReaderException("Falha ao iniciar Watch do Gmail", e);
         }
     }
 }
