@@ -32,9 +32,6 @@ public class EmailSearchCriteria {
     }
 
 
-    // Getters gerados automaticamente pelo Lombok @Getter
-
-
     public static class Builder {
         private String userId = GmailConstants.Gmail.CURRENT_USER_ID;
         private List<String> labelIds = List.of(GmailConstants.Gmail.INBOX_LABEL);
