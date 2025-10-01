@@ -59,39 +59,13 @@ public class OAuthManager {
 
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 
-        // Verifica e renova token se necessário
-        credential = verificarERenovarToken(credential);
-
-        logger.info("OAuth2 autorizado para usuário.");
+        logger.info("OAuth2 autorizado com sucesso");
         logger.info("Access token expira em: {} segundos", credential.getExpiresInSeconds());
         logger.info("Refresh token disponível: {}", credential.getRefreshToken() != null);
 
         return credential;
     }
 
-    private Credential verificarERenovarToken(Credential credential) throws Exception {
-        if (credential.getExpiresInSeconds() != null && credential.getExpiresInSeconds() <= 300) {
-            logger.warn("Token expira em {} segundos. Renovando automaticamente...", credential.getExpiresInSeconds());
-            
-            if (credential.refreshToken()) {
-                logger.info("Token renovado com sucesso! Nova expiração em: {} segundos", credential.getExpiresInSeconds());
-            } else {
-                logger.error("Falha ao renovar token. Refresh token pode estar inválido.");
-                throw new RuntimeException("Não foi possível renovar o access token");
-            }
-        } else if (credential.getExpiresInSeconds() != null && credential.getExpiresInSeconds() < 0) {
-            logger.error("Token já expirou há {} segundos. Forçando renovação...", Math.abs(credential.getExpiresInSeconds()));
-            
-            if (credential.refreshToken()) {
-                logger.info("Token expirado renovado com sucesso! Nova expiração em: {} segundos", credential.getExpiresInSeconds());
-            } else {
-                logger.error("Falha ao renovar token expirado. Pode ser necessário reautorizar.");
-                throw new RuntimeException("Token expirado e não foi possível renovar");
-            }
-        }
-        
-        return credential;
-    }
 }
 
 

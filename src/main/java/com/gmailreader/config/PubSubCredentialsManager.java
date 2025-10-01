@@ -4,9 +4,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 @Component
@@ -18,7 +18,7 @@ public class PubSubCredentialsManager {
     private String credentialsPath;
 
     public GoogleCredentials obterCredenciais() {
-        try (InputStream serviceAccountStream = new ClassPathResource(credentialsPath).getInputStream()) {
+        try (InputStream serviceAccountStream = new FileInputStream(credentialsPath)) {
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountStream);
             logger.info("Credenciais do Pub/Sub carregadas com sucesso");
             return credentials;
@@ -28,3 +28,4 @@ public class PubSubCredentialsManager {
         }
     }
 }
+

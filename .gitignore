@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Credenciais e Arquivos Sensíveis ###
+*.json
+credentials/
+tokens/
+emails/
+*.key
+*.pem
+*.p12
+application-local.properties
+application-prod.properties
+src/main/resources/application-local.properties
