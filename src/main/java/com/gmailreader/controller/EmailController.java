@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 public class EmailController {
 
@@ -18,7 +16,7 @@ public class EmailController {
     }
 
     @GetMapping("/processar-emails")
-    public ResponseEntity<ApiResponse<String>> processarEmails() throws IOException {
+    public ResponseEntity<ApiResponse<String>> processarEmails() {
         emailProcessingService.processarEmails();
         
         ApiResponse<String> response = ApiResponse.sucesso(
