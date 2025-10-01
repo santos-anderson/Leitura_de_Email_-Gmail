@@ -52,18 +52,10 @@ public class GmailWatchService {
             }
 
             emailProcessingService.processarEmails();
-<<<<<<< HEAD
             logger.info("Emails processados com sucesso para historyId: {}", historyId);
 
         } catch (Exception e) {
             logger.error("Erro inesperado ao processar emails para historyId {}: {}", historyId, e.getMessage(), e);
-
-=======
-
-        } catch (Exception e) {
-            logger.error("Erro inesperado ao processar emails para historyId {}: {}", historyId, e.getMessage(), e);
-            emailProcessingService.processarEmails();
->>>>>>> 0f9a767be6f6d597b3db65ad04ea1f063a645f9a
         }
     }
 
