@@ -1,28 +1,42 @@
 package com.gmailreader.repository;
 
-import org.json.JSONObject;
-import org.springframework.stereotype.Repository;
+import com.gmailreader.repository.cache.EmailCache;
+import com.gmailreader.repository.io.EmailFileReader;
+import com.gmailreader.repository.io.EmailFileWriter;
+import com.gmailreader.repository.parser.JsonEmailParser;
 import com.gmailreader.service.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import jakarta.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileWriter;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class ProcessedEmailFileRepository {
 
-    private final StorageService storageService;
-    private final Set<String> indiceEmMemoria;
-    private volatile boolean indiceCarregado = false;
-    private final Object lockArquivo = new Object(); // lock para escrita em disco
+    private static final Logger logger = LoggerFactory.getLogger(ProcessedEmailFileRepository.class);
+    private static final String ARQUIVO_PROCESSADOS = "emails_processados.json";
 
-    public ProcessedEmailFileRepository(StorageService storageService) {
+    private final StorageService storageService;
+    private final EmailCache emailCache;
+    private final EmailFileReader fileReader;
+    private final EmailFileWriter fileWriter;
+    private final JsonEmailParser jsonParser;
+
+    public ProcessedEmailFileRepository(
+            StorageService storageService,
+            EmailCache emailCache,
+            EmailFileReader fileReader,
+            EmailFileWriter fileWriter,
+            JsonEmailParser jsonParser) {
         this.storageService = storageService;
-        this.indiceEmMemoria = ConcurrentHashMap.newKeySet();
+        this.emailCache = emailCache;
+        this.fileReader = fileReader;
+        this.fileWriter = fileWriter;
+        this.jsonParser = jsonParser;
     }
 
     @PostConstruct
@@ -32,84 +46,36 @@ public class ProcessedEmailFileRepository {
 
     public boolean emailJaProcessado(String emailId) {
         garantirIndiceCarregado();
-        return indiceEmMemoria.contains(emailId);
+        return emailCache.contem(emailId);
     }
 
     public void marcarComoProcessado(String emailId) {
         garantirIndiceCarregado();
-        if (indiceEmMemoria.add(emailId)) {
-            // Grava imediatamente no arquivo
-            salvarEmailNoArquivo(emailId);
+        
+        if (emailCache.adicionar(emailId)) {
+            String caminhoPasta = storageService.obterLocalizacaoArmazenamento();
+            fileWriter.salvarEmailId(caminhoPasta, ARQUIVO_PROCESSADOS, emailId);
         }
     }
 
     private void garantirIndiceCarregado() {
-        if (!indiceCarregado) {
+        if (!emailCache.estaCarregado()) {
             carregarIndiceEmMemoria();
         }
     }
 
     private synchronized void carregarIndiceEmMemoria() {
-        if (indiceCarregado) return;
-
-        indiceEmMemoria.clear();
-        File pasta = new File(storageService.obterLocalizacaoArmazenamento());
-        if (!pasta.exists()) {
-            indiceCarregado = true;
+        if (emailCache.estaCarregado()) {
             return;
         }
 
-        File[] arquivos = pasta.listFiles((dir, nome) -> nome.endsWith(".json"));
-        if (arquivos == null) {
-            indiceCarregado = true;
-            return;
-        }
-
-        for (File arquivo : arquivos) {
-            indiceEmMemoria.addAll(extrairIdsDoArquivo(arquivo));
-        }
-
-        indiceCarregado = true;
-        System.out.println("Índice carregado em memória: " + indiceEmMemoria.size() + " emails processados");
-    }
-
-    private Set<String> extrairIdsDoArquivo(File arquivo) {
-        Set<String> ids = new HashSet<>();
-        try (Scanner scanner = new Scanner(arquivo)) {
-            while (scanner.hasNextLine()) {
-                String linha = scanner.nextLine();
-                if (!linha.trim().isEmpty()) {
-                    try {
-                        JSONObject json = new JSONObject(linha);
-                        if (json.has("id")) {
-                            ids.add(json.getString("id"));
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Erro ao processar linha do arquivo " + arquivo.getName() + ": " + e.getMessage());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao ler arquivo " + arquivo.getName() + ": " + e.getMessage());
-        }
-        return ids;
-    }
-
-    private void salvarEmailNoArquivo(String emailId) {
-        synchronized (lockArquivo) {
-            try {
-                File pasta = new File(storageService.obterLocalizacaoArmazenamento());
-                if (!pasta.exists()) pasta.mkdirs();
-
-                File arquivo = new File(pasta, "emails_processados.json");
-                try (FileWriter writer = new FileWriter(arquivo, true)) { // append
-                    JSONObject json = new JSONObject();
-                    json.put("id", emailId);
-                    writer.write(json.toString() + "\n");
-                }
-            } catch (Exception e) {
-                System.err.println("Erro ao salvar email processado: " + e.getMessage());
-            }
-        }
+        String caminhoPasta = storageService.obterLocalizacaoArmazenamento();
+        List<File> arquivos = fileReader.listarArquivosJson(caminhoPasta);
+        
+        Set<String> todosIds = jsonParser.extrairIdsDeArquivos(arquivos, fileReader::lerLinhasDoArquivo);
+        
+        emailCache.carregar(todosIds);
+        
+        logger.info("Repositório inicializado com {} emails processados", emailCache.tamanho());
     }
 }

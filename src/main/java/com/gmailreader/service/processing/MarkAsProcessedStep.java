@@ -15,7 +15,6 @@ public class MarkAsProcessedStep extends AbstractProcessingStep {
 
     @Override
     protected void executarProcessamento(Message message, ProcessingContext context) throws Exception {
-        // Marca o email como processado e grava imediatamente no arquivo
         processedEmailRepository.marcarComoProcessado(message.getId());
     }
 }

@@ -7,6 +7,8 @@ import com.gmailreader.exception.GmailReaderException;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -18,6 +20,7 @@ import java.util.Locale;
 @Service
 public class EmailToJsonService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailToJsonService.class);
     private final ObjectMapper objectMapper;
 
     public EmailToJsonService() {
@@ -33,9 +36,20 @@ public class EmailToJsonService {
             String remetente = extrairHeader(message.getPayload().getHeaders(), "From");
             String assunto = extrairHeader(message.getPayload().getHeaders(), "Subject");
             String data = formatarData(extrairHeader(message.getPayload().getHeaders(), "Date"));
+            
+            List<String> anexos = extrairAnexos(message.getPayload());
             String corpo = extrairCorpo(message.getPayload());
 
-            EmailDto emailDto = new EmailDto(message.getId(), data, remetente, assunto, corpo);
+            EmailDto emailDto = new EmailDto(
+                message.getId(), 
+                data, 
+                remetente, 
+                assunto, 
+                corpo,
+                !anexos.isEmpty(),
+                anexos
+            );
+            
             return objectMapper.writeValueAsString(emailDto);
         } catch (JsonProcessingException e) {
             throw new GmailReaderException("Erro ao serializar email para JSON: " + e.getMessage(), e);
@@ -51,6 +65,27 @@ public class EmailToJsonService {
                 .orElse("");
     }
 
+    private List<String> extrairAnexos(MessagePart payload) {
+        if (payload.getParts() == null) {
+            return List.of();
+        }
+        
+        List<String> anexos = payload.getParts().stream()
+                .filter(part -> part.getFilename() != null && !part.getFilename().isEmpty())
+                .map(part -> {
+                    String filename = part.getFilename();
+                    String mimeType = part.getMimeType() != null ? part.getMimeType() : "unknown";
+                    return String.format("%s (%s)", filename, mimeType);
+                })
+                .toList();
+        
+        if (!anexos.isEmpty()) {
+            logger.info("Email contém {} anexo(s): {}", anexos.size(), String.join(", ", anexos));
+        }
+        
+        return anexos;
+    }
+    
     private String extrairCorpo(MessagePart payload) {
         String corpo = "";
         

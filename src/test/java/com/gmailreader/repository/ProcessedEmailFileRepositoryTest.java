@@ -1,5 +1,9 @@
 package com.gmailreader.repository;
 
+import com.gmailreader.repository.cache.InMemoryEmailCache;
+import com.gmailreader.repository.io.EmailFileReader;
+import com.gmailreader.repository.io.EmailFileWriter;
+import com.gmailreader.repository.parser.JsonEmailParser;
 import com.gmailreader.service.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,13 +28,29 @@ class ProcessedEmailFileRepositoryTest {
     private StorageService storageService;
 
     private ProcessedEmailFileRepository repository;
+    private InMemoryEmailCache emailCache;
+    private EmailFileReader fileReader;
+    private EmailFileWriter fileWriter;
+    private JsonEmailParser jsonParser;
 
     @TempDir
     Path tempDir;
 
     @BeforeEach
     void setUp() {
-        repository = new ProcessedEmailFileRepository(storageService);
+        emailCache = new InMemoryEmailCache();
+        fileReader = new EmailFileReader();
+        fileWriter = new EmailFileWriter();
+        jsonParser = new JsonEmailParser();
+        
+        repository = new ProcessedEmailFileRepository(
+            storageService,
+            emailCache,
+            fileReader,
+            fileWriter,
+            jsonParser
+        );
+        
         when(storageService.obterLocalizacaoArmazenamento()).thenReturn(tempDir.toString());
     }
 
